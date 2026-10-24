@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Payment</title>
+
+</head>
+<body>
+
+<!-- PAYMENT PAGE -->
+<div class="payment-container page active" id="paymentPage">
+
+    <div class="warning-box">
+        <h3>⚠ Payment Warning</h3>
+        <p>
+            Please use only the original payment method.
+            Fake or fraudulent payments may result in
+            your account ID being blocked.
+        </p>
+    </div>
+
+    <!-- Reverse Timer -->
+    <div class="timer-ic">
+        <span> <svg  width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-timer-reset preview-icon"><path d="M10 2h4"/><path d="M12 14v-4"/><path d="M4 13a8 8 0 0 1 8-7 8 8 0 1 1-5.3 14L4 17.6"/><path d="M9 17H4v5"/></svg> 
+</span>
+        <div class="timer" id="timer">10:00</div>
+    </div>
+
+    <!-- QR Code -->
+    <div class="qr-section">
+        <h2>Scan QR Code</h2>
+        <p>Scan the official QR code to pay securely.</p>
+
+        <div class="qr-placeholder"></div>
+    </div>
+
+    <!-- Payment UTR -->
+    <div class="url-section">
+        <h2>Pay Using Payment UTR</h2>
+        <p>Paste your authorized payment link below.</p>
+
+        <label for="payment">Payment UTR</label>
+
+        <input
+            type="UTR"
+            id="payment"
+            placeholder="Paste payment UTR"
+            required
+        >
+
+        <button class="button" id="submit" type="button">
+            Submit
+        </button>
+
+        <p class="url-note">
+            🔒 Verify the payment UTR before making a payment.
+        </p>
+    </div>
+
+    <div class="top-icon">🛡️</div>
+
+    <h1>Secure Payment</h1>
+    <p class="subtitle">Safe, Fast & Trusted Payments</p>
+
+    <div class="security-box">
+        <span class="security-icon">🛡️</span>
+        <div>
+            <h3>Payment Safety First</h3>
+            <p>
+                Always make payments through the original
+                and authorized payment source.
+                Your security is our priority.
+            </p>
+        </div>
+    </div>
+
+    <div class="secure-footer">
+        <span>🔒</span>
+        <p>Your Safety. Your Payment. Your Trust.</p>
+    </div>
+
+</div>
+
+
+<!-- PROCESSING PAGE: Initially Hidden -->
+<section class="process page" id="processing">
+
+    <div class="processing-card">
+
+        <div class="time-icon">
+            <div class="clock">◷</div>
+        </div>
+
+        <h2>Payment Processing</h2>
+
+        <p class="message">Wait Please...</p>
+
+        <div class="loader"></div>
+
+        <p class="description">
+            Please wait while we process your payment.
+            Do not close or refresh this page.
+        </p>
+
+        <button class="back-button" id="backButton" type="button">
+          <a href="index.html" style="color: #f30505; font-weight: 700;">← Back To Home</a>  
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- Notification -->
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+
+<style>
+
+
+    * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #0d0d0e;
+    color: #ffffff;
+    min-height: 100vh;
+    padding: 25px 12px;
+}
+
+/* PAGE NAVIGATION */
+
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* PAYMENT CARD */
+
+.payment-container {
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 25px 20px;
+    background: #172336;
+    border: 1px solid #26364d;
+    border-radius: 22px;
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.35);
+}
+
+h1 {
+    text-align: center;
+    font-size: 29px;
+    margin-bottom: 8px;
+}
+
+h2 {
+    color: #ffffff;
+    font-size: 20px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+p {
+    color: #9aabc1;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.subtitle {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+/* WARNING */
+
+.warning-box {
+    background: #30221b;
+    border: 1px solid #8b5930;
+    padding: 14px;
+    border-radius: 14px;
+    margin-bottom: 20px;
+}
+
+.warning-box h3 {
+    color: #ffb66d;
+    font-size: 15px;
+    margin-bottom: 8px;
+}
+
+.warning-box p {
+    color: #c2cedd;
+}
+
+/* TIMER */
+
+.timer-ic {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-bottom: 20px;
+    color: #48e0b0;
+}
+
+.timer-ic span {
+    font-size: 25px;
+}
+
+.timer {
+    font-size: 23px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.timer.expired {
+    color: #ff6262;
+}
+
+/* QR CODE */
+
+.qr-section {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.qr-section p {
+    margin-bottom: 15px;
+}
+
+.qr-placeholder {
+    width: 190px;
+    height: 190px;
+    margin: 15px auto;
+    background-color: #ffffff;
+    background-image: url("qr_pixel.jpeg");
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    border-radius: 10px;
+}
+
+/* PAYMENT URL */
+
+.url-section {
+    margin-bottom: 30px;
+}
+
+.url-section h2 {
+    margin-bottom: 8px;
+}
+
+.url-section > p {
+    margin-bottom: 16px;
+}
+
+.url-section label {
+    display: block;
+    font-size: 13px;
+    color: #dce7f5;
+    margin-bottom: 9px;
+}
+
+.url-section input {
+    width: 100%;
+    padding: 14px;
+    background: #0a1220;
+    border: 1px solid #354760;
+    border-radius: 11px;
+    color: #ffffff;
+    font-size: 14px;
+    outline: none;
+}
+
+.url-section input:focus {
+    border-color: #36c9a0;
+    box-shadow: 0 0 0 3px rgba(54, 201, 160, 0.12);
+}
+
+.url-section input::placeholder {
+    color: #687a91;
+}
+
+.button {
+    width: 100%;
+    margin-top: 14px;
+    padding: 13px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #ffffff;
+    background: #019b0e;
+    border: none;
+    border-radius: 11px;
+    cursor: pointer;
+}
+
+.button:hover {
+    background: #017b0b;
+}
+
+.url-note {
+    margin-top: 12px;
+    font-size: 12px;
+}
+
+/* SECURITY */
+
+.top-icon {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 16px;
+    background: #172e43;
+    border: 1px solid #287f89;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+}
+
+.security-box {
+    display: flex;
+    gap: 13px;
+    padding: 17px;
+    background: #102d2b;
+    border: 1px solid #1c7165;
+    border-radius: 14px;
+}
+
+.security-icon {
+    font-size: 26px;
+}
+
+.security-box h3 {
+    color: #5ce0b1;
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.secure-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    border-top: 1px solid #2b394d;
+    margin-top: 25px;
+    padding-top: 18px;
+}
+
+.secure-footer p {
+    color: #5ce0b1;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* PROCESSING PAGE */
+
+.process {
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
+}
+
+.processing-card {
+    width: 100%;
+    padding: 35px 25px;
+    text-align: center;
+    background: linear-gradient(145deg, #ffffff, #f3f6ff);
+    border: 1px solid #e3e8f5;
+    border-radius: 22px;
+    box-shadow: 0 12px 35px rgba(30, 60, 120, 0.12);
+}
+
+.time-icon {
+    width: 95px;
+    height: 95px;
+    margin: 0 auto 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e8efff;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+.clock {
+    width: 65px;
+    height: 65px;
+    border: 4px solid #3867f5;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #3867f5;
+    font-size: 45px;
+}
+
+.processing-card h2 {
+    color: #172554;
+    font-size: 24px;
+    margin-bottom: 12px;
+}
+
+.message {
+    font-size: 17px;
+    font-weight: bold;
+    color: #3867f5;
+    margin-bottom: 25px;
+}
+
+.loader {
+    width: 42px;
+    height: 42px;
+    margin: 0 auto 25px;
+    border: 4px solid #dce5ff;
+    border-top: 4px solid #3867f5;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.description {
+    font-size: 14px;
+    color: #64748b;
+    line-height: 1.7;
+    margin-bottom: 28px;
+}
+
+.back-button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    background: #3867f5;
+    color: #be0404;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.back-button:hover {
+    background: #244bd0;
+}
+
+/* TOAST MESSAGE */
+
+.toast {
+    position: fixed;
+    z-index: 200;
+    left: 50%;
+    bottom: 25px;
+    transform: translateX(-50%);
+    width: max-content;
+    max-width: calc(100% - 30px);
+    padding: 13px 17px;
+    border-radius: 12px;
+    background: #ffe8e8;
+    color: #a40000;
+    font-size: 13px;
+    font-weight: bold;
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.2s;
+}
+
+.toast.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+@media (max-width: 400px) {
+    .payment-container {
+        padding: 22px 16px;
+    }
+
+    .processing-card {
+        padding: 28px 20px;
+    }
+
+    .qr-placeholder {
+        width: 170px;
+        height: 170px;
+    }
+
+    h1 {
+        font-size: 25px;
+    }
+}
+
+
+</style>
+
+
+
+
+<script >
+
+
+/* =========================
+   PAGE ELEMENTS
+========================= */
+
+const paymentPage = document.getElementById("paymentPage");
+const processingPage = document.getElementById("processing");
+
+const paymentInput = document.getElementById("payment");
+const submitButton = document.getElementById("submit");
+
+
+const toast = document.getElementById("toast");
+const timer = document.getElementById("timer");
+
+let toastTimer;
+
+
+/* =========================
+   NOTIFICATION
+========================= */
+
+function showMessage(message) {
+    toast.textContent = message;
+    toast.classList.add("show");
+
+    clearTimeout(toastTimer);
+
+    toastTimer = setTimeout(function () {
+        toast.classList.remove("show");
+    }, 3000);
+}
+
+
+/* =========================
+   PAGE NAVIGATION
+========================= */
+
+function showPage(pageId) {
+
+    // Hide both pages
+    paymentPage.classList.remove("active");
+    processingPage.classList.remove("active");
+
+    // Show only the selected page
+    document.getElementById(pageId).classList.add("active");
+
+    // Clear previous notification
+    toast.classList.remove("show");
+
+    // Scroll to top
+    window.scrollTo({
+        top: 0,
+        behavior: "instant"
+    });
+}
+
+/* =========================
+   SUBMIT UTR NUMBER
+========================= */
+
+
+const utrInput = document.getElementById("payment");
+
+submitButton.addEventListener("click", function () {
+
+    const utrNumber = utrInput.value.trim();
+
+    // Empty check
+    if (!utrNumber) {
+        showMessage("Please enter your UTR Number.");
+        utrInput.focus();
+        return;
+    }
+
+    // Digits only
+    if (!/^\d+$/.test(utrNumber)) {
+        showMessage("UTR Number must contain digits only.");
+        utrInput.focus();
+        return;
+    }
+
+    // Length check: 12 digits
+    if (utrNumber.length !== 12) {
+        showMessage("Please enter a valid 12-digit UTR Number.");
+        utrInput.focus();
+        return;
+    }
+
+    // Show processing page only
+    showPage("processing");
+
+});
+
+
+
+
+
+
+
+/* =========================
+   REVERSE TIMER
+   10:00 -> 00:00
+========================= */
+
+let timeLeft = 600;
+
+function updateTimer() {
+
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+
+    timer.textContent =
+        String(minutes).padStart(2, "0") + ":" +
+        String(seconds).padStart(2, "0");
+
+    if (timeLeft <= 0) {
+        timer.textContent = "00:00";
+        timer.classList.add("expired");
+        clearInterval(countdown);
+        return;
+    }
+
+    timeLeft--;
+}
+
+updateTimer();
+
+const countdown = setInterval(updateTimer, 1000);
+
+</script>
+
+
+
+
+
+
+
+
+
+</body>
+</html>
